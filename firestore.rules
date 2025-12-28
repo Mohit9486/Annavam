@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Orders collection
+    match /orders/{orderId} {
+      // Allow anyone to create orders (customers placing orders)
+      allow create: if true;
+      
+      // Allow anyone to read orders (for admin dashboard)
+      // In production, you might want to restrict this to authenticated admins
+      allow read: if true;
+      
+      // Allow updates and deletes (for admin operations)
+      // In production, you should restrict this to authenticated admins only
+      allow update, delete: if true;
+    }
+  }
+}

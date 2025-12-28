@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANNAVAM Signature Pedas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="navbar">
+<div class="container nav-flex">
+<h1>ANNAVAM</h1>
+<nav>
+<a href="#products">Our Pedas</a>
+<a href="#about">Our Story</a>
+<a href="#delivery-faqs">Delivery</a>
+<a href="#order">Order</a>
+</nav>
+</div>
+</header>
+
+<section class="hero">
+<h2>Legacy Pedas from the Heart of Rajasthan</h2>
+<p>Handcrafted with patience, intuition, and love since the 1970s</p>
+<div class="hero-subtitle">
+<p>🧡 From our village to your home — this is our ANNAVAM</p>
+</div>
+</section>
+
+<section class="container section">
+<h2>Our Pedas</h2>
+<div class="pricing-explanation">
+<p><strong>*Preparation and craft fee</strong> - An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas.</p>
+</div>
+
+<div id="products">
+<div class="product">
+<img src="images/milk_peda.jpg" alt="Legacy Pedas">
+<h3>Legacy Pedas</h3>
+<p class="price">₹600 per kg</p>
+<p class="price-note">*Preparation and craft fee</p>
+<input type="number" id="milkQty" placeholder="Quantity in kg" min="0.5" step="0.5">
+<button onclick="addToCart('Legacy Pedas', 600, 'milkQty')">Add to Cart</button>
+</div>
+
+<div class="product">
+<img src="images/kesar_peda.jpg" alt="Legacy Kesar Pedas">
+<h3>Legacy Kesar Pedas</h3>
+<p class="price">₹800 per kg</p>
+<p class="price-note">*Preparation and craft fee</p>
+<input type="number" id="kesarQty" placeholder="Quantity in kg" min="0.5" step="0.5">
+<button onclick="addToCart('Legacy Kesar Pedas', 800, 'kesarQty')">Add to Cart</button>
+</div>
+</div>
+</section>
+
+<section id="order" class="container section">
+<h2>Your Order</h2>
+<div id="cart"></div>
+</section>
+
+<section id="about" class="container section about-section">
+<h2>Our Story</h2>
+<div class="about-content">
+<p>In a small village of Rajasthan, called Girawari, long before brands and barcodes, sweets were made with patience, intuition, and love.</p>
+
+<p>Our grandparents began preparing Pedas in the 1970s — not as a business, but as a way of life. Milk was slow-cooked, hands did the measuring, and taste was refined over decades, not days.</p>
+
+<p>Over the years, something beautiful happened.</p>
+
+<p>People carried our Pedas beyond the village — to cities, to other states, to family gatherings and festivals. Every time, the feedback was the same: <em>"This tastes different. This tastes real."</em></p>
+
+<p><strong>ANNAVAM was born from this journey.</strong></p>
+
+<p>ANNAVAM means lineage — the passing down of knowledge, values, and taste from one generation to another. Every product we make carries that continuity: handmade, small-batch, honest, and uncompromising.</p>
+
+<div class="values">
+<p>We don't rush.</p>
+<p>We don't mass-produce.</p>
+<p>We make food the way it was always meant to be made.</p>
+</div>
+
+<p class="closing"><strong>From our village to your home — this is our ANNAVAM.</strong></p>
+</div>
+</section>
+
+<section id="delivery-faqs" class="container section faqs-section">
+<h2>Delivery FAQs</h2>
+<div class="faqs-content">
+
+<div class="faq-item">
+<h4>1. Where do you ship from?</h4>
+<p>We ship directly from our village in Rajasthan. Every order is prepared fresh and dispatched from there — we do not stock or warehouse our products elsewhere.</p>
+</div>
+
+<div class="faq-item">
+<h4>2. Do you deliver across India?</h4>
+<p>Yes. We currently deliver to most locations across India using reliable courier services, including India Post Speed Post. Delivery timelines may vary depending on the destination.</p>
+</div>
+
+<div class="faq-item">
+<h4>3. How long does delivery take?</h4>
+<p>Once dispatched, delivery usually takes:</p>
+<ul>
+<li>1–2 days within Rajasthan</li>
+<li>2–3 days for nearby states</li>
+<li>3–5 days for other parts of India</li>
+</ul>
+<p>These timelines are indicative and may vary due to courier network conditions.</p>
+</div>
+
+<div class="faq-item">
+<h4>4. When are orders prepared?</h4>
+<p>ANNAVAM products are made to order.</p>
+<ul>
+<li>Orders are prepared only after payment confirmation</li>
+<li>Preparation typically happens within 24–48 hours</li>
+<li>Dispatch follows immediately after preparation</li>
+</ul>
+<p>This ensures freshness and quality.</p>
+</div>
+
+<div class="faq-item">
+<h4>5. On which days do you dispatch orders?</h4>
+<p>To ensure smooth transit and freshness, we usually dispatch orders from Monday to Wednesday. We avoid dispatching close to weekends or public holidays to reduce transit delays.</p>
+</div>
+
+<div class="faq-item">
+<h4>6. Which courier service do you use?</h4>
+<p>Currently, we primarily use India Post Speed Post, which offers reliable PAN-India coverage, especially from rural locations. As we grow, additional courier partners may be added.</p>
+</div>
+
+<div class="faq-item">
+<h4>7. Will I receive a tracking number?</h4>
+<p>Yes. Once your order is dispatched, the tracking details will be shared with you via WhatsApp or email.</p>
+</div>
+
+<div class="faq-item">
+<h4>8. What is the shelf life of ANNAVAM Pedas?</h4>
+<ul>
+<li>Our Pedas are best enjoyed within 7-10 days of delivery</li>
+<li>Store in a cool, dry place</li>
+<li>Refrigeration is recommended for extended freshness</li>
+<li>As we do not use preservatives, timely consumption is advised</li>
+</ul>
+<p>Exact shelf life details are mentioned on the product packaging.</p>
+</div>
+
+<div class="faq-item">
+<h4>9. Do you offer Cash on Delivery (COD)?</h4>
+<p>No. We currently accept pre-paid orders only. This allows us to prepare products specifically for you and maintain consistent quality.</p>
+</div>
+
+<div class="faq-item">
+<h4>10. What if my order is delayed or damaged?</h4>
+<p>While delays or damage are rare, logistics are sometimes beyond our control. If your order arrives in an unsatisfactory condition:</p>
+<ul>
+<li>Please contact us within 24 hours of delivery</li>
+<li>Share photos if possible</li>
+<li>We will review the issue and offer a suitable resolution</li>
+</ul>
+<p>Your trust matters to us.</p>
+</div>
+
+<div class="faq-item">
+<h4>11. Are ANNAVAM products suitable for gifting?</h4>
+<p>Yes. Many of our customers order ANNAVAM Pedas for:</p>
+<ul>
+<li>Family occasions</li>
+<li>Festivals</li>
+<li>Thoughtful gifting</li>
+</ul>
+<p>Each order is packed carefully to ensure safe transit.</p>
+</div>
+
+<div class="faq-item">
+<h4>12. Who should I contact for delivery-related queries?</h4>
+<p>You can reach us directly via WhatsApp or email. We prefer personal communication and will respond as promptly as possible.</p>
+</div>
+
+<div class="gentle-note">
+<h4>🧡 A Gentle Note</h4>
+<p>ANNAVAM is a small-batch, handcrafted food brand. We may not be the fastest — but we promise honesty, care, and food made the right way.</p>
+</div>
+
+</div>
+</section>
+
+<footer class="footer">
+<div class="container">
+<div class="footer-content">
+<div class="footer-section">
+<h3>ANNAVAM</h3>
+<p>Crafting traditional pedas with love and authenticity since generations. Experience the taste of pure tradition.</p>
+</div>
+<div class="footer-section">
+<h4>Contact Info</h4>
+<p>📞 +91 98765 43210</p>
+<p>📧 info@annavam.com</p>
+<p>📍 Traditional Sweet Shop, Heritage Street</p>
+</div>
+<div class="footer-section">
+<h4>Business Hours</h4>
+<p>Monday - Saturday: 9:00 AM - 8:00 PM</p>
+<p>Sunday: 10:00 AM - 6:00 PM</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2024 ANNAVAM Signature Pedas. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
