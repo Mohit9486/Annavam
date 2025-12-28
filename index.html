@@ -28,43 +28,6 @@
 </div>
 </section>
 
-<section class="container section">
-<h2>Our Pedas</h2>
-<div class="pricing-explanation">
-<p><strong>*Preparation and craft fee</strong> - An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas.</p>
-</div>
-
-<div id="products">
-<div class="product">
-<img src="images/milk_peda.jpg" alt="Legacy Pedas">
-<h3>Legacy Pedas</h3>
-<div class="price-container">
-<p class="price">₹600 per kg <span class="info-icon" onclick="showPriceInfo()" title="Click for details">ℹ️</span></p>
-<p class="price-subtitle">Preparation and craft fee</p>
-</div>
-<input type="number" id="milkQty" placeholder="Quantity in kg" min="0.5" step="0.5">
-<div class="product-buttons">
-<button onclick="addToCart('Legacy Pedas', 600, 'milkQty')">Add to Cart</button>
-<button class="buy-now-btn" onclick="buyNow('Legacy Pedas', 600, 'milkQty')">Buy Now</button>
-</div>
-</div>
-
-<div class="product">
-<img src="images/kesar_peda.jpg" alt="Legacy Kesar Pedas">
-<h3>Legacy Kesar Pedas</h3>
-<div class="price-container">
-<p class="price">₹900 per kg <span class="info-icon" onclick="showPriceInfo()" title="Click for details">ℹ️</span></p>
-<p class="price-subtitle">Preparation and craft fee</p>
-</div>
-<input type="number" id="kesarQty" placeholder="Quantity in kg" min="0.5" step="0.5">
-<div class="product-buttons">
-<button onclick="addToCart('Legacy Kesar Pedas', 900, 'kesarQty')">Add to Cart</button>
-<button class="buy-now-btn" onclick="buyNow('Legacy Kesar Pedas', 900, 'kesarQty')">Buy Now</button>
-</div>
-</div>
-</div>
-</section>
-
 <section id="about" class="container section about-section">
 <h2>Our Story</h2>
 <div class="about-content">
@@ -87,6 +50,43 @@
 </div>
 
 <p class="closing"><strong>From our village to your home — this is our ANNAVAM.</strong></p>
+</div>
+</section>
+
+<section id="products" class="container section">
+<h2>Our Pedas</h2>
+<div class="pricing-explanation">
+<p><strong>*Preparation and craft fee</strong> - An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas.</p>
+</div>
+
+<div class="products-grid">
+<div class="product">
+<img src="images/milk_peda.jpg" alt="Legacy Pedas">
+<h3>Legacy Pedas</h3>
+<div class="price-display">
+<span class="price-label">Preparation and craft fee:</span>
+<span class="price-amount">₹600 per kg</span>
+</div>
+<input type="number" id="milkQty" placeholder="Quantity in kg" min="0.5" step="0.5">
+<div class="product-buttons">
+<button onclick="addToCart('Legacy Pedas', 600, 'milkQty')">Add to Cart</button>
+<button class="buy-now-btn" onclick="buyNow('Legacy Pedas', 600, 'milkQty')">Buy Now</button>
+</div>
+</div>
+
+<div class="product">
+<img src="images/kesar_peda.jpg" alt="Legacy Kesar Pedas">
+<h3>Legacy Kesar Pedas</h3>
+<div class="price-display">
+<span class="price-label">Preparation and craft fee:</span>
+<span class="price-amount">₹900 per kg</span>
+</div>
+<input type="number" id="kesarQty" placeholder="Quantity in kg" min="0.5" step="0.5">
+<div class="product-buttons">
+<button onclick="addToCart('Legacy Kesar Pedas', 900, 'kesarQty')">Add to Cart</button>
+<button class="buy-now-btn" onclick="buyNow('Legacy Kesar Pedas', 900, 'kesarQty')">Buy Now</button>
+</div>
+</div>
 </div>
 </section>
 
@@ -261,14 +261,10 @@
 <div class="container">
 <div class="footer-content">
 <div class="footer-section">
-<h3>ANNAVAM</h3>
-<p>Crafting traditional pedas with love and authenticity since generations. Experience the taste of pure tradition.</p>
-</div>
-<div class="footer-section">
 <h4>Contact Info</h4>
 <p>📞 +91 98765 43210</p>
 <p>📧 info@annavam.com</p>
-<p>📍 Traditional Sweet Shop, Heritage Street</p>
+<p>📍 Girawari Village, Rajasthan</p>
 </div>
 <div class="footer-section">
 <h4>Business Hours</h4>
@@ -277,7 +273,7 @@
 </div>
 </div>
 <div class="footer-bottom">
-<p>&copy; 2024 ANNAVAM Signature Pedas. All rights reserved.</p>
+<p>&copy; 2024 ANNAVAM. All rights reserved.</p>
 </div>
 </div>
 </footer>

@@ -139,9 +139,9 @@ body {
 }
 
 /* Products grid */
-#products {
+.products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
 }
@@ -1133,36 +1133,28 @@ button:active {
 }
 
 /* Price styling */
-.price-container {
+.price-display {
     margin: 1rem 0;
+    text-align: center;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid #FFD700;
+    border-radius: 8px;
+    padding: 0.8rem;
 }
 
-.price {
-    font-size: 1.4rem;
+.price-label {
+    font-size: 1rem;
+    color: #8B4513;
+    font-weight: 500;
+    display: inline;
+}
+
+.price-amount {
+    font-size: 1.3rem;
     font-weight: 700;
     color: #2E8B57;
-    margin: 0.5rem 0;
-}
-
-.info-icon {
-    font-size: 1rem;
-    cursor: pointer;
-    color: #FFD700;
-    transition: transform 0.2s ease;
     margin-left: 0.5rem;
-}
-
-.info-icon:hover {
-    transform: scale(1.2);
-}
-
-.price-subtitle {
-    font-size: 0.9rem;
-    color: #8B4513;
-    font-style: italic;
-    font-weight: 500;
-    margin: 0.3rem 0 1rem 0;
-    text-align: center;
+    display: inline;
 }
 
 /* Product Buttons */
@@ -1199,7 +1191,7 @@ button:active {
     background: rgba(255, 255, 255, 0.7);
     border-radius: 15px;
     padding: 3rem 2rem;
-    margin: 3rem 0;
+    margin: 3rem auto;
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
@@ -1251,7 +1243,7 @@ button:active {
     background: rgba(255, 248, 220, 0.8);
     border-radius: 15px;
     padding: 3rem 2rem;
-    margin: 3rem 0;
+    margin: 3rem auto;
 }
 
 .faqs-section h2 {

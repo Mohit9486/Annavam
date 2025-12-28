@@ -821,10 +821,7 @@ function toggleFAQ(element) {
     }
 }
 
-// Price Info Popup
-function showPriceInfo() {
-    alert('*Preparation and craft fee - An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas.');
-}
+// Price info is now displayed inline, no popup needed
 
 // Buy Now Functionality
 function buyNow(name, price, qtyId) {
