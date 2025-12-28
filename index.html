@@ -14,7 +14,7 @@
 <nav>
 <a href="#products">Our Pedas</a>
 <a href="#about">Our Story</a>
-<a href="#delivery-faqs">Delivery</a>
+<a href="#delivery-faqs">FAQs</a>
 <a href="#order">Order</a>
 </nav>
 </div>
@@ -39,28 +39,28 @@
 <img src="images/milk_peda.jpg" alt="Legacy Pedas">
 <h3>Legacy Pedas</h3>
 <div class="price-container">
-<p class="price">₹600 per kg</p>
-<div class="price-info">
-<span class="info-icon" title="An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas">ℹ️</span>
-<span class="price-label">Preparation and craft fee</span>
-</div>
+<p class="price">₹600 per kg <span class="info-icon" onclick="showPriceInfo()" title="Click for details">ℹ️</span></p>
+<p class="price-subtitle">Preparation and craft fee</p>
 </div>
 <input type="number" id="milkQty" placeholder="Quantity in kg" min="0.5" step="0.5">
+<div class="product-buttons">
 <button onclick="addToCart('Legacy Pedas', 600, 'milkQty')">Add to Cart</button>
+<button class="buy-now-btn" onclick="buyNow('Legacy Pedas', 600, 'milkQty')">Buy Now</button>
+</div>
 </div>
 
 <div class="product">
 <img src="images/kesar_peda.jpg" alt="Legacy Kesar Pedas">
 <h3>Legacy Kesar Pedas</h3>
 <div class="price-container">
-<p class="price">₹800 per kg</p>
-<div class="price-info">
-<span class="info-icon" title="An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas">ℹ️</span>
-<span class="price-label">Preparation and craft fee</span>
-</div>
+<p class="price">₹900 per kg <span class="info-icon" onclick="showPriceInfo()" title="Click for details">ℹ️</span></p>
+<p class="price-subtitle">Preparation and craft fee</p>
 </div>
 <input type="number" id="kesarQty" placeholder="Quantity in kg" min="0.5" step="0.5">
-<button onclick="addToCart('Legacy Kesar Pedas', 800, 'kesarQty')">Add to Cart</button>
+<div class="product-buttons">
+<button onclick="addToCart('Legacy Kesar Pedas', 900, 'kesarQty')">Add to Cart</button>
+<button class="buy-now-btn" onclick="buyNow('Legacy Kesar Pedas', 900, 'kesarQty')">Buy Now</button>
+</div>
 </div>
 </div>
 </section>

@@ -786,7 +786,16 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCart();
     checkAdminAccess();
     initializeFirebase();
+    initializeFAQs();
 });
+
+// Initialize FAQs as collapsed
+function initializeFAQs() {
+    const faqAnswers = document.querySelectorAll('.faq-answer');
+    faqAnswers.forEach(answer => {
+        answer.style.display = 'none';
+    });
+}
 
 // Add admin access via URL hash
 window.addEventListener('hashchange', function() {
@@ -794,3 +803,44 @@ window.addEventListener('hashchange', function() {
         showAdminLogin();
     }
 });
+
+// FAQ Toggle Functionality
+function toggleFAQ(element) {
+    const faqItem = element.parentElement;
+    const faqAnswer = faqItem.querySelector('.faq-answer');
+    const faqToggle = element.querySelector('.faq-toggle');
+    
+    if (faqAnswer.style.display === 'none' || faqAnswer.style.display === '') {
+        faqAnswer.style.display = 'block';
+        faqToggle.textContent = '−';
+        faqItem.classList.add('active');
+    } else {
+        faqAnswer.style.display = 'none';
+        faqToggle.textContent = '+';
+        faqItem.classList.remove('active');
+    }
+}
+
+// Price Info Popup
+function showPriceInfo() {
+    alert('*Preparation and craft fee - An enabling fee that covers preparation, craftsmanship and ingredients of our handcrafted Pedas.');
+}
+
+// Buy Now Functionality
+function buyNow(name, price, qtyId) {
+    const qty = parseFloat(document.getElementById(qtyId).value);
+    
+    if (!qty || qty < 0.5) {
+        showErrorMessage('Please enter a valid quantity (minimum 0.5 kg)');
+        return;
+    }
+    
+    // Clear cart and add this item
+    cart = [];
+    addToCart(name, price, qtyId);
+    
+    // Scroll to order section
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    
+    showSuccessMessage(`${name} added to cart! Complete your order below.`);
+}
