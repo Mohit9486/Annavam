@@ -1082,7 +1082,7 @@ function logoutAdmin() {
     }
 }
 
-// Buy Now Functionality - Direct order placement
+// Buy Now Functionality - Uses same order form as regular Place Order
 function buyNow(name, price, qtyId) {
     const qty = parseFloat(document.getElementById(qtyId).value);
     
@@ -1091,148 +1091,26 @@ function buyNow(name, price, qtyId) {
         return;
     }
     
-    // Create temporary cart with just this item
-    const tempCart = [{
+    // Clear cart and add this item
+    cart = [];
+    cart.push({
         name: name,
         price: price,
         qty: qty
-    }];
-    
-    // Show order form with this item
-    showQuickOrderForm(tempCart);
-}
-
-// Show quick order form for Buy Now
-function showQuickOrderForm(items) {
-    const total = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    
-    const orderFormHtml = `
-        <div class="quick-order-overlay">
-            <div class="quick-order-modal">
-                <div class="order-header">
-                    <h3>Complete Your Order</h3>
-                    <button onclick="closeQuickOrder()" class="close-btn">×</button>
-                </div>
-                <div class="order-summary">
-                    <h4>Order Summary:</h4>
-                    ${items.map(item => `
-                        <div class="order-item">
-                            ${item.name} - ${item.qty}kg = ₹${(item.price * item.qty).toLocaleString()}
-                        </div>
-                    `).join('')}
-                    <div class="order-total">
-                        <strong>Total: ₹${total.toLocaleString()}</strong>
-                    </div>
-                </div>
-                <form id="quickOrderForm">
-                    <div class="input-group">
-                        <label for="quickName">Full Name *</label>
-                        <input type="text" id="quickName" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="quickWhatsapp">WhatsApp Number *</label>
-                        <input type="tel" id="quickWhatsapp" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="quickAddress">Delivery Address *</label>
-                        <textarea id="quickAddress" rows="3" required></textarea>
-                    </div>
-                    <div class="order-buttons">
-                        <button type="submit" class="btn-place-order">
-                            <span class="btn-text">Place Order - ₹${total.toLocaleString()}</span>
-                            <span class="btn-loading" style="display: none;">Placing Order...</span>
-                        </button>
-                        <button type="button" onclick="closeQuickOrder()" class="btn-cancel">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', orderFormHtml);
-    
-    // Handle form submission
-    document.getElementById('quickOrderForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const name = document.getElementById('quickName').value;
-        const whatsapp = document.getElementById('quickWhatsapp').value;
-        const address = document.getElementById('quickAddress').value;
-        
-        // Show loading state
-        const btnText = document.querySelector('.quick-order-modal .btn-text');
-        const btnLoading = document.querySelector('.quick-order-modal .btn-loading');
-        const orderBtn = document.querySelector('.btn-place-order');
-        
-        btnText.style.display = 'none';
-        btnLoading.style.display = 'inline';
-        orderBtn.disabled = true;
-        
-        // Place the order
-        placeQuickOrder(items, { name, whatsapp, address, total });
     });
+    
+    // Update cart display
+    renderCart();
+    
+    // Show the same order form as regular Place Order
+    showOrderForm();
+    
+    // Clear the quantity input
+    document.getElementById(qtyId).value = '';
 }
 
-// Close quick order form
-function closeQuickOrder() {
-    const overlay = document.querySelector('.quick-order-overlay');
-    if (overlay) {
-        overlay.remove();
-    }
-}
-
-// Place quick order
-async function placeQuickOrder(items, customerInfo) {
-    try {
-        const order = {
-            id: 'ORDER_' + Date.now(),
-            name: customerInfo.name,
-            whatsapp: customerInfo.whatsapp,
-            address: customerInfo.address,
-            items: items,
-            total: customerInfo.total,
-            timestamp: new Date().toISOString(),
-            status: 'pending'
-        };
-        
-        if (db) {
-            // Save to Firebase
-            await saveOrderToFirestore(order);
-        } else {
-            // Save to localStorage as fallback
-            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            orders.push(order);
-            localStorage.setItem('orders', JSON.stringify(orders));
-        }
-        
-        closeQuickOrder();
-        showSuccessMessage('Order placed successfully! We will contact you soon on WhatsApp.');
-        
-        // Clear the quantity input
-        items.forEach(item => {
-            const inputs = document.querySelectorAll('input[type="number"]');
-            inputs.forEach(input => {
-                if (input.value) input.value = '';
-            });
-        });
-        
-    } catch (error) {
-        console.error('Error placing order:', error);
-        
-        // Reset button state
-        const btnText = document.querySelector('.quick-order-modal .btn-text');
-        const btnLoading = document.querySelector('.quick-order-modal .btn-loading');
-        const orderBtn = document.querySelector('.btn-place-order');
-        
-        if (btnText && btnLoading && orderBtn) {
-            btnText.style.display = 'inline';
-            btnLoading.style.display = 'none';
-            orderBtn.disabled = false;
-        }
-        
-        showErrorMessage('Failed to place order. Please try again.');
-    }
-}
+// Buy Now now uses the same order form as regular Place Order
+// No separate quick order form needed
 
 // Generate order action buttons based on status
 function getOrderActionButtons(order) {
