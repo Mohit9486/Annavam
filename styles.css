@@ -1533,48 +1533,82 @@ button:active {
     background: #5a6268 !important;
 }
 
-/* Status Badges */
-.status-badge {
-    display: inline-block;
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-left: 0.5rem;
-}
-
-.status-pending {
-    background: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeaa7;
-}
-
-.status-confirmed {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
-
-.status-delivered {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.btn-revert {
-    background: linear-gradient(135deg, #6c757d, #5a6268) !important;
-    color: white !important;
-    border: none !important;
+/* Consistent Status Buttons */
+.btn-status {
     padding: 0.5rem 1rem !important;
-    border-radius: 5px !important;
-    font-size: 0.9rem !important;
+    border: 2px solid transparent !important;
+    border-radius: 6px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
+    margin-right: 0.5rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
 }
 
-.btn-revert:hover {
-    background: linear-gradient(135deg, #5a6268, #495057) !important;
+.btn-active {
+    color: white !important;
+    cursor: not-allowed !important;
+    opacity: 0.9 !important;
+}
+
+.btn-inactive {
+    background: white !important;
+    cursor: pointer !important;
+}
+
+.btn-inactive:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Pending Status */
+.btn-status:nth-child(1).btn-active {
+    background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+    border-color: #ffc107 !important;
+}
+
+.btn-status:nth-child(1).btn-inactive {
+    color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+
+.btn-status:nth-child(1).btn-inactive:hover {
+    background: #ffc107 !important;
+    color: white !important;
+}
+
+/* Confirmed Status */
+.btn-status:nth-child(2).btn-active {
+    background: linear-gradient(135deg, #17a2b8, #138496) !important;
+    border-color: #17a2b8 !important;
+}
+
+.btn-status:nth-child(2).btn-inactive {
+    color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+}
+
+.btn-status:nth-child(2).btn-inactive:hover {
+    background: #17a2b8 !important;
+    color: white !important;
+}
+
+/* Delivered Status */
+.btn-status:nth-child(3).btn-active {
+    background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+    border-color: #28a745 !important;
+}
+
+.btn-status:nth-child(3).btn-inactive {
+    color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+.btn-status:nth-child(3).btn-inactive:hover {
+    background: #28a745 !important;
+    color: white !important;
 }
 
 /* Quick Order Modal */

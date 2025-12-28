@@ -1238,27 +1238,21 @@ async function placeQuickOrder(items, customerInfo) {
 function getOrderActionButtons(order) {
     const status = order.status || 'pending';
     
-    switch (status) {
-        case 'pending':
-            return `
-                <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-confirm">Mark Confirmed</button>
-                <span class="status-badge status-pending">Pending</span>
-            `;
-        case 'confirmed':
-            return `
-                <button onclick="updateOrderStatus('${order.id}', 'delivered')" class="btn-delivered">Mark Delivered</button>
-                <button onclick="updateOrderStatus('${order.id}', 'pending')" class="btn-revert">Mark Pending</button>
-                <span class="status-badge status-confirmed">Confirmed</span>
-            `;
-        case 'delivered':
-            return `
-                <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-revert">Mark Undelivered</button>
-                <span class="status-badge status-delivered">Delivered</span>
-            `;
-        default:
-            return `
-                <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-confirm">Mark Confirmed</button>
-                <span class="status-badge status-pending">Pending</span>
-            `;
-    }
+    return `
+        <button onclick="updateOrderStatus('${order.id}', 'pending')" 
+                class="btn-status ${status === 'pending' ? 'btn-active' : 'btn-inactive'}"
+                ${status === 'pending' ? 'disabled' : ''}>
+            Pending
+        </button>
+        <button onclick="updateOrderStatus('${order.id}', 'confirmed')" 
+                class="btn-status ${status === 'confirmed' ? 'btn-active' : 'btn-inactive'}"
+                ${status === 'confirmed' ? 'disabled' : ''}>
+            Confirmed
+        </button>
+        <button onclick="updateOrderStatus('${order.id}', 'delivered')" 
+                class="btn-status ${status === 'delivered' ? 'btn-active' : 'btn-inactive'}"
+                ${status === 'delivered' ? 'disabled' : ''}>
+            Delivered
+        </button>
+    `;
 }
