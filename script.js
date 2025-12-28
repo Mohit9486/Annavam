@@ -58,25 +58,83 @@ function addToCart(name, price, qtyId) {
     const qty = parseFloat(qtyInput.value);
     
     if (!qty || qty <= 0) {
-        alert('Please enter a valid quantity in kg (minimum 0.5 kg)');
+        showErrorMessage('Please enter a valid quantity in kg (minimum 0.5 kg)');
+        return;
+    }
+    
+    if (qty < 0.5) {
+        showErrorMessage('Minimum order quantity is 0.5 kg');
         return;
     }
     
     // Check if item already exists in cart
-    const existingItem = cart.find(item => item.name === name);
-    if (existingItem) {
-        existingItem.qty += qty;
+    const existingItemIndex = cart.findIndex(item => item.name === name);
+    
+    if (existingItemIndex > -1) {
+        // Update quantity if item exists
+        const oldQty = cart[existingItemIndex].qty;
+        cart[existingItemIndex].qty += qty;
+        showSuccessMessage(`${name}: Updated quantity from ${oldQty}kg to ${cart[existingItemIndex].qty}kg`);
     } else {
-        cart.push({ name, price, qty });
+        // Add new item to cart
+        cart.push({
+            name: name,
+            price: price,
+            qty: qty
+        });
+        showSuccessMessage(`${name} (${qty}kg) added to cart! 🛒`);
     }
     
-    // Clear the input field
+    // Clear the input
     qtyInput.value = '';
     
-    // Show success feedback
-    showSuccessMessage(`Added ${qty}kg of ${name} to cart!`);
-    
+    // Update cart display
     renderCart();
+    
+    // Show cart notification
+    showCartNotification();
+    
+    // Scroll to cart section smoothly
+    setTimeout(() => {
+        document.getElementById('order').scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'nearest'
+        });
+    }, 500);
+}
+
+// Show cart notification
+function showCartNotification() {
+    const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    // Remove existing notification
+    const existingNotification = document.querySelector('.cart-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'cart-notification';
+    notification.innerHTML = `
+        <div class="cart-notification-content">
+            <span class="cart-icon">🛒</span>
+            <div class="cart-info">
+                <div class="cart-items">${cartCount} item${cartCount > 1 ? 's' : ''} in cart</div>
+                <div class="cart-total">₹${cartTotal.toLocaleString()}</div>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="notification-close">×</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 4000);
 }
 
 function removeFromCart(index) {
@@ -452,17 +510,29 @@ function showAdminLogin() {
     const loginHtml = `
         <div class="admin-login-overlay">
             <div class="admin-login-modal">
-                <h2>Admin Login</h2>
+                <div class="login-header">
+                    <div class="login-logo">🔐</div>
+                    <h2>Admin Access</h2>
+                    <p>Secure login for ANNAVAM administrators</p>
+                </div>
                 <form id="adminLoginForm">
-                    <input type="email" id="adminEmail" placeholder="Enter admin email" required>
-                    <input type="password" id="adminPassword" placeholder="Enter password" required>
+                    <div class="input-group">
+                        <label for="adminEmail">Email Address</label>
+                        <input type="email" id="adminEmail" placeholder="Enter your admin email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" placeholder="Enter your password" required>
+                    </div>
                     <div class="login-buttons">
-                        <button type="submit">Login</button>
-                        <button type="button" onclick="closeAdminLogin()">Cancel</button>
+                        <button type="submit" class="btn-login">
+                            <span class="btn-text">Sign In</span>
+                            <span class="btn-loading" style="display: none;">Signing in...</span>
+                        </button>
+                        <button type="button" class="btn-cancel" onclick="closeAdminLogin()">Cancel</button>
                     </div>
                     <div class="auth-links">
-                        <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
-                        <a href="#" onclick="showSignup()">Create Admin Account</a>
+                        <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
                     </div>
                 </form>
                 <div id="authMessage" class="auth-message"></div>
@@ -478,7 +548,13 @@ function showAdminLogin() {
         const password = document.getElementById('adminPassword').value;
         
         // Show loading state
-        showAuthMessage('Logging in...', 'info');
+        const btnText = document.querySelector('.btn-text');
+        const btnLoading = document.querySelector('.btn-loading');
+        const loginBtn = document.querySelector('.btn-login');
+        
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+        loginBtn.disabled = true;
         
         // Firebase Authentication
         auth.signInWithEmailAndPassword(email, password)
@@ -507,6 +583,11 @@ function showAdminLogin() {
                         errorMessage = 'Too many failed attempts. Please try again later.';
                         break;
                 }
+                
+                // Reset button state
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                loginBtn.disabled = false;
                 
                 showAuthMessage(errorMessage, 'error');
             });
@@ -737,8 +818,7 @@ function renderDashboard(orders) {
                     <strong>Total: ₹${order.total.toLocaleString()}</strong>
                 </div>
                 <div class="order-actions">
-                    <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-confirm">Mark Confirmed</button>
-                    <button onclick="updateOrderStatus('${order.id}', 'delivered')" class="btn-delivered">Mark Delivered</button>
+                    ${getOrderActionButtons(order)}
                     <button onclick="deleteOrder('${order.id}')" class="btn-delete">Delete</button>
                 </div>
             </div>
@@ -1002,7 +1082,7 @@ function logoutAdmin() {
     }
 }
 
-// Buy Now Functionality
+// Buy Now Functionality - Direct order placement
 function buyNow(name, price, qtyId) {
     const qty = parseFloat(document.getElementById(qtyId).value);
     
@@ -1011,12 +1091,174 @@ function buyNow(name, price, qtyId) {
         return;
     }
     
-    // Clear cart and add this item
-    cart = [];
-    addToCart(name, price, qtyId);
+    // Create temporary cart with just this item
+    const tempCart = [{
+        name: name,
+        price: price,
+        qty: qty
+    }];
     
-    // Scroll to order section
-    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    // Show order form with this item
+    showQuickOrderForm(tempCart);
+}
+
+// Show quick order form for Buy Now
+function showQuickOrderForm(items) {
+    const total = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
     
-    showSuccessMessage(`${name} added to cart! Complete your order below.`);
+    const orderFormHtml = `
+        <div class="quick-order-overlay">
+            <div class="quick-order-modal">
+                <div class="order-header">
+                    <h3>Complete Your Order</h3>
+                    <button onclick="closeQuickOrder()" class="close-btn">×</button>
+                </div>
+                <div class="order-summary">
+                    <h4>Order Summary:</h4>
+                    ${items.map(item => `
+                        <div class="order-item">
+                            ${item.name} - ${item.qty}kg = ₹${(item.price * item.qty).toLocaleString()}
+                        </div>
+                    `).join('')}
+                    <div class="order-total">
+                        <strong>Total: ₹${total.toLocaleString()}</strong>
+                    </div>
+                </div>
+                <form id="quickOrderForm">
+                    <div class="input-group">
+                        <label for="quickName">Full Name *</label>
+                        <input type="text" id="quickName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="quickWhatsapp">WhatsApp Number *</label>
+                        <input type="tel" id="quickWhatsapp" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="quickAddress">Delivery Address *</label>
+                        <textarea id="quickAddress" rows="3" required></textarea>
+                    </div>
+                    <div class="order-buttons">
+                        <button type="submit" class="btn-place-order">
+                            <span class="btn-text">Place Order - ₹${total.toLocaleString()}</span>
+                            <span class="btn-loading" style="display: none;">Placing Order...</span>
+                        </button>
+                        <button type="button" onclick="closeQuickOrder()" class="btn-cancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', orderFormHtml);
+    
+    // Handle form submission
+    document.getElementById('quickOrderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('quickName').value;
+        const whatsapp = document.getElementById('quickWhatsapp').value;
+        const address = document.getElementById('quickAddress').value;
+        
+        // Show loading state
+        const btnText = document.querySelector('.quick-order-modal .btn-text');
+        const btnLoading = document.querySelector('.quick-order-modal .btn-loading');
+        const orderBtn = document.querySelector('.btn-place-order');
+        
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+        orderBtn.disabled = true;
+        
+        // Place the order
+        placeQuickOrder(items, { name, whatsapp, address, total });
+    });
+}
+
+// Close quick order form
+function closeQuickOrder() {
+    const overlay = document.querySelector('.quick-order-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+// Place quick order
+async function placeQuickOrder(items, customerInfo) {
+    try {
+        const order = {
+            id: 'ORDER_' + Date.now(),
+            name: customerInfo.name,
+            whatsapp: customerInfo.whatsapp,
+            address: customerInfo.address,
+            items: items,
+            total: customerInfo.total,
+            timestamp: new Date().toISOString(),
+            status: 'pending'
+        };
+        
+        if (db) {
+            // Save to Firebase
+            await saveOrderToFirestore(order);
+        } else {
+            // Save to localStorage as fallback
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+        
+        closeQuickOrder();
+        showSuccessMessage('Order placed successfully! We will contact you soon on WhatsApp.');
+        
+        // Clear the quantity input
+        items.forEach(item => {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                if (input.value) input.value = '';
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error placing order:', error);
+        
+        // Reset button state
+        const btnText = document.querySelector('.quick-order-modal .btn-text');
+        const btnLoading = document.querySelector('.quick-order-modal .btn-loading');
+        const orderBtn = document.querySelector('.btn-place-order');
+        
+        if (btnText && btnLoading && orderBtn) {
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+            orderBtn.disabled = false;
+        }
+        
+        showErrorMessage('Failed to place order. Please try again.');
+    }
+}
+
+// Generate order action buttons based on status
+function getOrderActionButtons(order) {
+    const status = order.status || 'pending';
+    
+    switch (status) {
+        case 'pending':
+            return `
+                <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-confirm">Mark Confirmed</button>
+                <span class="status-badge status-pending">Pending</span>
+            `;
+        case 'confirmed':
+            return `
+                <button onclick="updateOrderStatus('${order.id}', 'delivered')" class="btn-delivered">Mark Delivered</button>
+                <button onclick="updateOrderStatus('${order.id}', 'pending')" class="btn-revert">Mark Pending</button>
+                <span class="status-badge status-confirmed">Confirmed</span>
+            `;
+        case 'delivered':
+            return `
+                <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-revert">Mark Undelivered</button>
+                <span class="status-badge status-delivered">Delivered</span>
+            `;
+        default:
+            return `
+                <button onclick="updateOrderStatus('${order.id}', 'confirmed')" class="btn-confirm">Mark Confirmed</button>
+                <span class="status-badge status-pending">Pending</span>
+            `;
+    }
 }
