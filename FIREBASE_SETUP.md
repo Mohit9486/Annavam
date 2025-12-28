@@ -16,6 +16,16 @@
 4. Select your region (choose closest to your location)
 5. Click "Done"
 
+## Step 2.1: Set up Firebase Authentication
+
+1. In your Firebase project, click "Authentication" in the left sidebar
+2. Click "Get started"
+3. Go to "Sign-in method" tab
+4. Click on "Email/Password"
+5. **Enable** Email/Password authentication
+6. Click "Save"
+7. Go to "Users" tab to create your first admin account (or use the website signup)
+
 ## Step 3: Set up Firebase Hosting
 
 1. Click "Hosting" in the left sidebar
@@ -98,7 +108,16 @@ service cloud.firestore {
 1. Place a test order on your website
 2. Check Firebase Console > Firestore Database
 3. You should see the order in the "orders" collection
-4. Test admin dashboard (#admin) - password: `annavam123`
+4. Test admin dashboard with Firebase Authentication
+
+### **🔐 Admin Access:**
+- **URL:** https://annavam-orders.web.app/#admin
+- **Authentication:** Firebase Email/Password
+- **Features:** 
+  - Secure login with email/password
+  - Forgot password functionality
+  - Create new admin accounts
+  - Automatic logout
 
 ## Firebase Project Structure
 

@@ -25,16 +25,31 @@ function initializeFirebase() {
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         
-        // Initialize Firestore
+        // Initialize Firestore and Auth
         db = firebase.firestore();
-        
-        // Initialize Auth
         auth = firebase.auth();
+        
+        // Set up auth state listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('Admin authenticated:', user.email);
+                // User is signed in, show admin dashboard
+                if (window.location.hash === '#admin') {
+                    showAdminDashboard();
+                }
+            } else {
+                console.log('Admin not authenticated');
+                // User is signed out
+                if (window.location.hash === '#admin') {
+                    showAdminLogin();
+                }
+            }
+        });
         
         console.log('Firebase initialized successfully');
     } catch (error) {
-        console.error('Error initializing Firebase:', error);
-        showErrorMessage('Firebase initialization failed - using local storage');
+        console.error('Firebase initialization error:', error);
+        showErrorMessage('Database connection failed. Using local storage as backup.');
     }
 }
 
@@ -435,19 +450,22 @@ function checkAdminAccess() {
 
 function showAdminLogin() {
     const loginHtml = `
-        <div class="admin-login-overlay" id="adminLoginOverlay">
-            <div class="admin-login">
+        <div class="admin-login-overlay">
+            <div class="admin-login-modal">
                 <h2>Admin Login</h2>
                 <form id="adminLoginForm">
-                    <div class="form-group">
-                        <label for="adminPassword">Password:</label>
-                        <input type="password" id="adminPassword" required>
-                    </div>
-                    <div class="form-buttons">
-                        <button type="button" onclick="closeAdminLogin()">Cancel</button>
+                    <input type="email" id="adminEmail" placeholder="Enter admin email" required>
+                    <input type="password" id="adminPassword" placeholder="Enter password" required>
+                    <div class="login-buttons">
                         <button type="submit">Login</button>
+                        <button type="button" onclick="closeAdminLogin()">Cancel</button>
+                    </div>
+                    <div class="auth-links">
+                        <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                        <a href="#" onclick="showSignup()">Create Admin Account</a>
                     </div>
                 </form>
+                <div id="authMessage" class="auth-message"></div>
             </div>
         </div>
     `;
@@ -456,24 +474,157 @@ function showAdminLogin() {
     
     document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        const email = document.getElementById('adminEmail').value;
         const password = document.getElementById('adminPassword').value;
         
-        // Simple password check for now
-        // TODO: Replace with Firebase Authentication for better security
-        if (password === 'annavam123') {
-            closeAdminLogin();
-            showAdminDashboard();
-        } else {
-            showErrorMessage('Invalid password!');
-        }
+        // Show loading state
+        showAuthMessage('Logging in...', 'info');
+        
+        // Firebase Authentication
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Signed in successfully
+                const user = userCredential.user;
+                console.log('Admin logged in:', user.email);
+                closeAdminLogin();
+                showSuccessMessage('Welcome back, admin!');
+            })
+            .catch((error) => {
+                console.error('Login error:', error);
+                let errorMessage = 'Login failed. Please try again.';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No admin account found with this email.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed attempts. Please try again later.';
+                        break;
+                }
+                
+                showAuthMessage(errorMessage, 'error');
+            });
     });
 }
 
 function closeAdminLogin() {
-    const overlay = document.getElementById('adminLoginOverlay');
+    const overlay = document.querySelector('.admin-login-overlay');
     if (overlay) {
         overlay.remove();
     }
+}
+
+// Show auth message in login modal
+function showAuthMessage(message, type) {
+    const messageDiv = document.getElementById('authMessage');
+    if (messageDiv) {
+        messageDiv.textContent = message;
+        messageDiv.className = `auth-message ${type}`;
+    }
+}
+
+// Forgot Password functionality
+function showForgotPassword() {
+    const email = document.getElementById('adminEmail').value;
+    
+    if (!email) {
+        showAuthMessage('Please enter your email address first.', 'error');
+        return;
+    }
+    
+    showAuthMessage('Sending password reset email...', 'info');
+    
+    auth.sendPasswordResetEmail(email)
+        .then(() => {
+            showAuthMessage('Password reset email sent! Check your inbox.', 'success');
+        })
+        .catch((error) => {
+            console.error('Password reset error:', error);
+            let errorMessage = 'Failed to send reset email.';
+            
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMessage = 'No account found with this email address.';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'Invalid email address.';
+                    break;
+            }
+            
+            showAuthMessage(errorMessage, 'error');
+        });
+}
+
+// Signup functionality for creating admin accounts
+function showSignup() {
+    const signupHtml = `
+        <div class="admin-login-overlay">
+            <div class="admin-login-modal">
+                <h2>Create Admin Account</h2>
+                <form id="adminSignupForm">
+                    <input type="email" id="signupEmail" placeholder="Enter admin email" required>
+                    <input type="password" id="signupPassword" placeholder="Create password (min 6 chars)" required minlength="6">
+                    <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    <div class="login-buttons">
+                        <button type="submit">Create Account</button>
+                        <button type="button" onclick="closeAdminLogin(); showAdminLogin();">Back to Login</button>
+                    </div>
+                </form>
+                <div id="authMessage" class="auth-message"></div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing login modal
+    closeAdminLogin();
+    
+    document.body.insertAdjacentHTML('beforeend', signupHtml);
+    
+    document.getElementById('adminSignupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (password !== confirmPassword) {
+            showAuthMessage('Passwords do not match.', 'error');
+            return;
+        }
+        
+        showAuthMessage('Creating admin account...', 'info');
+        
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('Admin account created:', user.email);
+                closeAdminLogin();
+                showSuccessMessage('Admin account created successfully! You are now logged in.');
+            })
+            .catch((error) => {
+                console.error('Signup error:', error);
+                let errorMessage = 'Failed to create account.';
+                
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'An account with this email already exists.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password is too weak. Use at least 6 characters.';
+                        break;
+                }
+                
+                showAuthMessage(errorMessage, 'error');
+            });
+    });
 }
 
 async function showAdminDashboard() {
@@ -617,8 +768,16 @@ function renderDashboard(orders) {
                 </div>
                 <div class="orders-section">
                     <div class="orders-header">
-                        <h3>All Orders</h3>
-                        <button onclick="exportAllOrdersToExcel()" class="export-btn">📊 Export to Excel</button>
+                        <h2>Order Management</h2>
+                        <div class="admin-actions">
+                            <div class="admin-info">
+                                <span>Welcome, ${auth.currentUser ? auth.currentUser.email : 'Admin'}</span>
+                            </div>
+                            <div class="export-btn">
+                                <button onclick="exportAllOrdersToExcel()" class="btn-export">📊 Export to Excel</button>
+                                <button onclick="logoutAdmin()" class="btn-logout">🚪 Logout</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="orders-list">
                         ${ordersHtml}
@@ -822,6 +981,26 @@ function toggleFAQ(element) {
 }
 
 // Price info is now displayed inline, no popup needed
+
+// Admin logout functionality
+function logoutAdmin() {
+    if (confirm('Are you sure you want to logout?')) {
+        auth.signOut().then(() => {
+            console.log('Admin logged out');
+            showSuccessMessage('Logged out successfully');
+            // Remove admin dashboard
+            const dashboard = document.querySelector('.admin-dashboard-overlay');
+            if (dashboard) {
+                dashboard.remove();
+            }
+            // Redirect to home
+            window.location.hash = '';
+        }).catch((error) => {
+            console.error('Logout error:', error);
+            showErrorMessage('Logout failed. Please try again.');
+        });
+    }
+}
 
 // Buy Now Functionality
 function buyNow(name, price, qtyId) {
