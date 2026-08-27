@@ -1129,7 +1129,7 @@ function getOrderActionButtons(order) {
         </button>
         <button onclick="updateOrderStatus('${order.id}', 'delivered')" 
                 class="btn-status ${status === 'delivered' ? 'btn-active' : 'btn-inactive'}"
-                ${status === 'delivered' ? 'disabled' : ''}>
+                ${status === 'delivered' || status === 'archived' ? 'disabled' : ''}>
             Delivered
         </button>
     `;
